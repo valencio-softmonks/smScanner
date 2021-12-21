@@ -769,7 +769,7 @@ public final class CodeScanner {
             camera.setDisplayOrientation(orientation);
             synchronized (mInitializeLock) {
                 final Decoder decoder =
-                        new Decoder(mDecoderStateListener, mFormats, mDecodeCallback,cropRect);
+                        new Decoder(mDecoderStateListener, mFormats, mDecodeCallback, cropRect);
                 mDecoderWrapper =
                         new DecoderWrapper(camera, cameraInfo, decoder, imageSize, previewSize,
                                 viewSize, orientation, autoFocusSupported, flashSupported);
