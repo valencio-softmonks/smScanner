@@ -23,7 +23,6 @@
  */
 package com.valencio.smscannermodule;
 
-import android.Manifest;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -59,6 +58,9 @@ public final class CodeScanner {
             Arrays.asList(BarcodeFormat.AZTEC, BarcodeFormat.DATA_MATRIX, BarcodeFormat.MAXICODE,
                     BarcodeFormat.PDF_417, BarcodeFormat.QR_CODE));*/
 
+    /**
+     * Scans only PDF417
+     */
     public static final List<BarcodeFormat> TWO_DIMENSIONAL_FORMATS = Collections.unmodifiableList(
             Arrays.asList(BarcodeFormat.PDF_417));
 
@@ -110,6 +112,7 @@ public final class CodeScanner {
     private int mSafeAutoFocusAttemptsCount = 0;
     private int mViewWidth = 0;
     private int mViewHeight = 0;
+    public static Rect cropRect = new Rect(0, 0, 0, 0);
 
 
     @MainThread
@@ -436,10 +439,12 @@ public final class CodeScanner {
                 mSafeAutoFocusAttemptsCount = 0;
                 if (decoderWrapper.isAutoFocusSupported() && mAutoFocusEnabled) {
                     final Rect frameRect = mScannerView.getFrameRect();
+                    //frameRect = mScannerView.getFrameRect();
                     if (frameRect != null) {
                         final Parameters parameters = camera.getParameters();
                         Utils.configureDefaultFocusArea(parameters, decoderWrapper, frameRect);
                         camera.setParameters(parameters);
+                        cropRect = mScannerView.getFrameRect();
                     }
                     if (mAutoFocusMode == AutoFocusMode.SAFE) {
                         scheduleSafeAutoFocusTask();
@@ -535,6 +540,7 @@ public final class CodeScanner {
                     final Rect frameRect = mScannerView.getFrameRect();
                     if (frameRect != null) {
                         Utils.configureDefaultFocusArea(parameters, decoderWrapper, frameRect);
+                        cropRect = mScannerView.getFrameRect();
                     }
                 }
                 camera.setParameters(parameters);
@@ -743,6 +749,7 @@ public final class CodeScanner {
                 if (frameRect != null) {
                     Utils.configureDefaultFocusArea(parameters, frameRect, previewSize, viewSize,
                             imageWidth, imageHeight, orientation);
+                    cropRect = mScannerView.getFrameRect();
                 }
             }
             final List<String> flashModes = parameters.getSupportedFlashModes();
@@ -762,7 +769,7 @@ public final class CodeScanner {
             camera.setDisplayOrientation(orientation);
             synchronized (mInitializeLock) {
                 final Decoder decoder =
-                        new Decoder(mDecoderStateListener, mFormats, mDecodeCallback);
+                        new Decoder(mDecoderStateListener, mFormats, mDecodeCallback,cropRect);
                 mDecoderWrapper =
                         new DecoderWrapper(camera, cameraInfo, decoder, imageSize, previewSize,
                                 viewSize, orientation, autoFocusSupported, flashSupported);

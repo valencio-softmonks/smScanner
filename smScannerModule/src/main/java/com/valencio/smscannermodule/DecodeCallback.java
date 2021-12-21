@@ -43,10 +43,11 @@ public interface DecodeCallback {
      * Note that this method always called on a worker thread
      *
      * @param result Encapsulates the result of decoding a barcode within an image
+     * @param cropArea
      * @see Handler
      * @see Looper#getMainLooper()
      * @see Activity#runOnUiThread(Runnable)
      */
     @WorkerThread
-    void onDecoded(@NonNull Result result);
+    void onDecoded(@NonNull Result result, Rect cropArea);
 }

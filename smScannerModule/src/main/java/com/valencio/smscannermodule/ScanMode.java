@@ -29,13 +29,7 @@ package com.valencio.smscannermodule;
  * @see CodeScanner#setScanMode(ScanMode)
  */
 public enum ScanMode {
-
-
     SINGLE,
-
-
     CONTINUOUS,
-
-
     PREVIEW
 }

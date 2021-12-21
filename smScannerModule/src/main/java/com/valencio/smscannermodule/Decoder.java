@@ -23,19 +23,20 @@
  */
 package com.valencio.smscannermodule;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
 import android.os.Process;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
+
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 final class Decoder {
 
@@ -47,9 +48,11 @@ final class Decoder {
     private volatile DecodeCallback mCallback;
     private volatile DecodeTask mTask;
     private volatile State mState;
+    public volatile Rect cropArea = new Rect(0, 0, 0, 0);
+
 
     public Decoder(@NonNull final StateListener stateListener,
-            @NonNull final List<BarcodeFormat> formats, @Nullable final DecodeCallback callback) {
+                   @NonNull final List<BarcodeFormat> formats, @Nullable final DecodeCallback callback, Rect cropRect) {
         mReader = new MultiFormatReader();
         mDecoderThread = new DecoderThread();
         mHints = new EnumMap<>(DecodeHintType.class);
@@ -58,6 +61,7 @@ final class Decoder {
         mCallback = callback;
         mStateListener = stateListener;
         mState = State.INITIALIZED;
+        cropArea = cropRect;
     }
 
     public void setFormats(@NonNull final List<BarcodeFormat> formats) {
@@ -139,7 +143,7 @@ final class Decoder {
                         if (setState(Decoder.State.DECODED)) {
                             final DecodeCallback callback = mCallback;
                             if (callback != null) {
-                                callback.onDecoded(result);
+                                callback.onDecoded(result,cropArea);
                             }
                         }
                     }

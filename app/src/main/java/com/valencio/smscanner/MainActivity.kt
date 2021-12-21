@@ -27,11 +27,23 @@ class MainActivity : AppCompatActivity() {
         scanner.isFlashEnabled = false // Whether to enable flash or not
 
         // Callbacks
-        scanner.decodeCallback = DecodeCallback {
+        /*scanner.decodeCallback = DecodeCallback {
             runOnUiThread {
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
             }
+        }*/
+
+
+        scanner.decodeCallback = DecodeCallback { result, cropArea ->
+
+            runOnUiThread {
+                Toast.makeText(this, "Scan result: $cropArea", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Scan result: ${result.text}", Toast.LENGTH_LONG).show()
+
+            }
+
         }
+
         scanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
             runOnUiThread {
                 Toast.makeText(
