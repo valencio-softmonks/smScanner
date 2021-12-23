@@ -14,7 +14,6 @@
         app:layout_constraintStart_toStartOf="@+id/frameLayout"
         app:layout_constraintTop_toTopOf="@+id/frameLayout" />-->
 
-
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
@@ -33,7 +32,7 @@
             app:frameAspectRatioHeight="2"
             app:frameAspectRatioWidth="3"
             app:frameColor="@android:color/white"
-            app:frameCornersRadius="0dp"
+            app:frameCornersRadius="10dp"
             app:frameCornersSize="50dp"
             app:frameSize="0.9"
             app:frameThickness="2dp"

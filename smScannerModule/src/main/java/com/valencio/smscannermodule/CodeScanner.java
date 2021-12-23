@@ -24,12 +24,17 @@
 package com.valencio.smscannermodule;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Process;
+import android.util.Log;
+import android.view.PixelCopy;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import androidx.annotation.MainThread;
@@ -343,7 +348,14 @@ public final class CodeScanner {
     public void stopPreview() {
         if (mInitialized && mPreviewActive) {
             mSurfaceHolder.removeCallback(mSurfaceCallback);
+
+            /////
+            Surface data = mSurfaceHolder.getSurface();
+            /////
+
             stopPreviewInternal(false);
+
+
         }
     }
 
@@ -471,17 +483,58 @@ public final class CodeScanner {
                 if (!internal && decoderWrapper.isFlashSupported() && mFlashEnabled) {
                     Utils.setFlashMode(parameters, Parameters.FLASH_MODE_OFF);
                 }
+
+                /////
+                /*camera.takePicture(null, null, new Camera.PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] bytes, Camera camera) {
+                        Log.d("PIC", camera.toString());
+                        Log.d("PIC", camera.toString());
+                    }
+                });*/
+
+
+                takePhoto();
+                /////
+
+
                 camera.setParameters(parameters);
                 camera.setPreviewCallback(null);
                 camera.stopPreview();
             }
         } catch (final Exception ignored) {
+            Log.d("PIC", "CATCH");
         }
         mStoppingPreview = false;
         mPreviewActive = false;
         mSafeAutoFocusing = false;
         mSafeAutoFocusAttemptsCount = 0;
     }
+
+
+    private void takePhoto() {
+
+        // Create a bitmap the size of the scene view.
+        /*final Bitmap bitmap = Bitmap.createBitmap(mScannerView.getWidth(), mScannerView.getHeight(),
+                Bitmap.Config.ARGB_8888);
+
+
+        // Create a handler thread to offload the processing of the image.
+        final HandlerThread handlerThread = new HandlerThread("PixelCopier");
+        handlerThread.start();
+        // Make the request to copy.
+        PixelCopy.request(mScannerView, bitmap, (copyResult) -> {
+            if (copyResult == PixelCopy.SUCCESS) {
+                String name = String.valueOf(System.currentTimeMillis() + ".jpg");
+                String imageFile = ScreenshotUtils.store(bitmap, name);
+
+            } else {
+                Log.d("Error", "Failed to copyPixels: ");
+            }
+            handlerThread.quitSafely();
+        }, new Handler(handlerThread.getLooper()));*/
+    }
+
 
     private void stopPreviewInternalSafe() {
         if (mInitialized && mPreviewActive) {

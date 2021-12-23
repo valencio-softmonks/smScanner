@@ -89,7 +89,7 @@ public final class CodeScannerView extends ViewGroup {
 
 
     public CodeScannerView(@NonNull final Context context, @Nullable final AttributeSet attrs,
-            @AttrRes final int defStyleAttr) {
+                           @AttrRes final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context, attrs, defStyleAttr, 0);
     }
@@ -97,13 +97,13 @@ public final class CodeScannerView extends ViewGroup {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     public CodeScannerView(final Context context, final AttributeSet attrs,
-            @AttrRes final int defStyleAttr, @StyleRes final int defStyleRes) {
+                           @AttrRes final int defStyleAttr, @StyleRes final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initialize(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private void initialize(@NonNull final Context context, @Nullable final AttributeSet attrs,
-            @AttrRes final int defStyleAttr, @StyleRes final int defStyleRes) {
+                            @AttrRes final int defStyleAttr, @StyleRes final int defStyleRes) {
         mPreviewView = new SurfaceView(context);
         mPreviewView.setLayoutParams(
                 new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -183,13 +183,13 @@ public final class CodeScannerView extends ViewGroup {
 
     @Override
     protected void onLayout(final boolean changed, final int left, final int top, final int right,
-            final int bottom) {
+                            final int bottom) {
         performLayout(right - left, bottom - top);
     }
 
     @Override
     protected void onSizeChanged(final int width, final int height, final int oldWidth,
-            final int oldHeight) {
+                                 final int oldHeight) {
         performLayout(width, height);
         final SizeListener listener = mSizeListener;
         if (listener != null) {
