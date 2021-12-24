@@ -24,8 +24,11 @@
 package com.valencio.smscannermodule;
 
 import android.app.Activity;
+import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
@@ -44,10 +47,11 @@ public interface DecodeCallback {
      *
      * @param result Encapsulates the result of decoding a barcode within an image
      * @param cropArea
+     * @param surfaceArea
      * @see Handler
      * @see Looper#getMainLooper()
      * @see Activity#runOnUiThread(Runnable)
      */
     @WorkerThread
-    void onDecoded(@NonNull Result result, Rect cropArea);
+    void onDecoded(@NonNull Result result, Rect cropArea, SurfaceView surfaceArea);
 }

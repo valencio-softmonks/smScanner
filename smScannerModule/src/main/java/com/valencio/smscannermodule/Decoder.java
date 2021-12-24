@@ -23,7 +23,10 @@
  */
 package com.valencio.smscannermodule;
 
+import android.hardware.Camera;
 import android.os.Process;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +48,7 @@ final class Decoder {
     private final StateListener mStateListener;
     private final Map<DecodeHintType, Object> mHints;
     private final Object mTaskLock = new Object();
+    private final SurfaceView surfaceArea;
     private volatile DecodeCallback mCallback;
     private volatile DecodeTask mTask;
     private volatile State mState;
@@ -52,7 +56,7 @@ final class Decoder {
 
 
     public Decoder(@NonNull final StateListener stateListener,
-                   @NonNull final List<BarcodeFormat> formats, @Nullable final DecodeCallback callback, Rect cropRect) {
+                   @NonNull final List<BarcodeFormat> formats, @Nullable final DecodeCallback callback, Rect cropRect, SurfaceView mSurfaceHolder) {
         mReader = new MultiFormatReader();
         mDecoderThread = new DecoderThread();
         mHints = new EnumMap<>(DecodeHintType.class);
@@ -62,6 +66,7 @@ final class Decoder {
         mStateListener = stateListener;
         mState = State.INITIALIZED;
         cropArea = cropRect;
+        surfaceArea = mSurfaceHolder;
     }
 
     public void setFormats(@NonNull final List<BarcodeFormat> formats) {
@@ -143,7 +148,7 @@ final class Decoder {
                         if (setState(Decoder.State.DECODED)) {
                             final DecodeCallback callback = mCallback;
                             if (callback != null) {
-                                callback.onDecoded(result,cropArea);
+                                callback.onDecoded(result, cropArea, surfaceArea);
                             }
                         }
                     }
