@@ -23,25 +23,32 @@
  */
 package com.valencio.smscannermodule;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 import android.view.PixelCopy;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.google.zxing.BarcodeFormat;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -494,7 +501,8 @@ public final class CodeScanner {
                 });*/
 
 
-                takePhoto();
+                //takePhoto();
+
                 /////
 
 
@@ -533,6 +541,24 @@ public final class CodeScanner {
             }
             handlerThread.quitSafely();
         }, new Handler(handlerThread.getLooper()));*/
+    }
+    public interface Callback {
+        void onResult(@NotNull Bitmap bitmap);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void getBitmapFormView(View view, Activity activity, Callback callback) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+
+        int[] locations = new int[2];
+        view.getLocationInWindow(locations);
+        Rect rect = new Rect(locations[0], locations[1], locations[0] + view.getWidth(), locations[1] + view.getHeight());
+
+        PixelCopy.request(activity.getWindow(), null, bitmap, copyResult -> {
+            if (copyResult == PixelCopy.SUCCESS) {
+                callback.onResult(bitmap);
+            }
+        }, new Handler(Looper.getMainLooper()));
     }
 
 
